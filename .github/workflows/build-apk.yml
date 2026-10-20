@@ -1,0 +1,38 @@
+name: Build ATMBANK APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'ATM_BANK_Android_Project (1)/**'
+      - '.github/workflows/build-apk.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ATM_BANK_Android_Project (1)
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Build Debug APK
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ATMBANK-debug-apk
+          path: ATM_BANK_Android_Project (1)/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
